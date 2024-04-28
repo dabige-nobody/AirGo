@@ -173,6 +173,7 @@ type SurgeConf struct {
 	ProxyGroup ProxyGroup `ini:"Proxy Group"`
 	Rule       Rule       `ini:"Rule"`
 }
+
 type General struct {
 	Loglevel            string   `ini:"loglevel""`
 	Doh_server          string   `ini:"doh-server "`
@@ -216,6 +217,50 @@ type ProxyGroup struct {
 	Proxy    []string `ini:"Proxy"`
 	Auto     []string `ini:"auto"`
 	Fallback []string `ini:"fallback"`
+
+	// Surge订阅类型日常代理组
+	Manual            []string `ini:"♻️ 手动切换"`
+	Google            []string `ini:"🔎 Google"`
+	Bing              []string `ini:"🔎 Bing"`
+	Yahoo             []string `ini:"🔎 Yahoo"`
+	Speedtest         []string `ini:"🗺 Speedtest"`
+	OpenAI            []string `ini:"🧲 OpenAI"`
+	ChatApps          []string `ini:"📲 聊天软件"`
+	Discord           []string `ini:"🎙 Discord"`
+	YouTube           []string `ini:"🎬 YouTube"`
+	Netflix           []string `ini:"🎬 Netflix"`
+	DisneyPlus        []string `ini:"🎬 DisneyPlus"`
+	Bahamut           []string `ini:"🎬 巴哈姆特"`
+	ViuTV             []string `ini:"🎬 viuTV"`
+	KKTV              []string `ini:"🎬 KKTV"`
+	KoreanMedia       []string `ini:"🎬 韩国媒体"`
+	JapaneseMedia     []string `ini:"🎬 日本媒体"`
+	AppleTVPlus       []string `ini:"🎬 AppleTV+"`
+	HBOGO             []string `ini:"🎬 HBOGO"`
+	HBOMAX            []string `ini:"🎬 HBOMAX"`
+	PrimeVideo        []string `ini:"🎬 PrimeVideo"`
+	EMBY              []string `ini:"🎬 EMBY"`
+	Dazn              []string `ini:"🎬 Dazn"`
+	TikTok            []string `ini:"🎶 TikTok"`
+	Spotify           []string `ini:"🎵 Spotify"`
+	AppleMusic        []string `ini:"🎵 AppleMusic"`
+	TIDAL             []string `ini:"🎵 TIDAL"`
+	Qobuz             []string `ini:"🎵 Qobuz"`
+	IQiyi             []string `ini:"🎬 爱奇艺"`
+	BilibiliHKTW      []string `ini:"🎬 B站港澳台"`
+	BilibiliSEA       []string `ini:"🎬 B站东南亚"`
+	ForeignMedia      []string `ini:"🌏 国外流媒体"`
+	DomesticMedia     []string `ini:"🌏 国内流媒体"`
+	OneDrive          []string `ini:"🔖 OneDrive"`
+	ICloud            []string `ini:"☁️ iCloud"`
+	MicrosoftServices []string `ini:"🧩 微软服务"`
+	AppleServices     []string `ini:"🍎 苹果服务"`
+	GamingPlatform    []string `ini:"🎮 游戏平台"`
+	GamingDownload    []string `ini:"🎮 游戏下载"`
+	EmailService      []string `ini:"📪 邮件服务"`
+	ForeignWebsites   []string `ini:"🌏 国外网站"`
+	DomesticWebsites  []string `ini:"🌏 国内网站"`
+	Leak              []string `ini:"🐟 漏网之鱼"`
 }
 type Rule struct {
 	RuleText string `ini:"RuleText"`

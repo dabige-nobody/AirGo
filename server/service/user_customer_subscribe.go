@@ -303,6 +303,7 @@ func Shadowrocket(nodes *[]model.Node) string {
 
 // Surge 客户端订阅
 func Surge(nodes *[]model.Node) string {
+	// Surge订阅类型默认规则
 	var nodeArr, proxyGroupProxy, proxyGroupAuto, proxyGroupFallback []string
 	var subscribeInfo, proxyText string
 	//
@@ -318,8 +319,69 @@ func Surge(nodes *[]model.Node) string {
 	proxyGroupFallback = append(proxyGroupFallback, "url=http://www.gstatic.com/generate_204")
 	proxyGroupFallback = append(proxyGroupFallback, "interval=43200")
 
-	for _, v := range *nodes {
+	// Surge订阅类型日常规则代理节点
+	surgeProxyDailyGroup := &model.ProxyGroup{}
 
+	var (
+		proxyGroupManual, proxyGroupGoogle, proxyGroupBing, proxyGroupYahoo, proxyGroupSpeedtest, proxyGroupOpenAI, proxyGroupChatApps, proxyGroupDiscord, proxyGroupYouTube,
+		proxyGroupNetflix, proxyGroupDisneyPlus, proxyGroupBahamut, proxyGroupViuTV, proxyGroupKKTV, proxyGroupKoreanMedia, proxyGroupJapaneseMedia, proxyGroupAppleTVPlus,
+		proxyGroupHBOGO, proxyGroupHBOMAX, proxyGroupPrimeVideo, proxyGroupEMBY, proxyGroupDazn, proxyGroupTikTok, proxyGroupSpotify, proxyGroupAppleMusic, proxyGroupTIDAL,
+		proxyGroupQobuz, proxyGroupIQiyi, proxyGroupBilibiliHKTW, proxyGroupBilibiliSEA, proxyGroupForeignMedia, proxyGroupDomesticMedia, proxyGroupOneDrive, proxyGroupICloud,
+		proxyGroupMicrosoftServices, proxyGroupAppleServices, proxyGroupGamingPlatform, proxyGroupGamingDownload, proxyGroupEmailService, proxyGroupForeignWebsites, proxyGroupDomesticWebsites, proxyGroupLeak []string
+	)
+	// 判断是否需要增加Surge订阅类型日常规则
+	if global.Config.SystemParams.SurgeProxyDailyRules {
+		for {
+			for key, value := range surgeProxyDailyGroup {
+
+			}
+
+		}
+		proxyGroupManual = append(proxyGroupManual, "select")
+		proxyGroupGoogle = append(proxyGroupGoogle, "select")
+		proxyGroupBing = append(proxyGroupBing, "select")
+		proxyGroupYahoo = append(proxyGroupYahoo, "select")
+		proxyGroupSpeedtest = append(proxyGroupSpeedtest, "select")
+		proxyGroupOpenAI = append(proxyGroupOpenAI, "select")
+		proxyGroupChatApps = append(proxyGroupChatApps, "select")
+		proxyGroupDiscord = append(proxyGroupDiscord, "select")
+		proxyGroupYouTube = append(proxyGroupYouTube, "select")
+		proxyGroupNetflix = append(proxyGroupNetflix, "select")
+		proxyGroupDisneyPlus = append(proxyGroupDisneyPlus, "select")
+		proxyGroupBahamut = append(proxyGroupBahamut, "select")
+		proxyGroupViuTV = append(proxyGroupViuTV, "select")
+		proxyGroupKKTV = append(proxyGroupKKTV, "select")
+		proxyGroupKoreanMedia = append(proxyGroupKoreanMedia, "select")
+		proxyGroupJapaneseMedia = append(proxyGroupJapaneseMedia, "select")
+		proxyGroupAppleTVPlus = append(proxyGroupAppleTVPlus, "select")
+		proxyGroupHBOGO = append(proxyGroupHBOGO, "select")
+		proxyGroupHBOMAX = append(proxyGroupHBOMAX, "select")
+		proxyGroupPrimeVideo = append(proxyGroupPrimeVideo, "select")
+		proxyGroupEMBY = append(proxyGroupEMBY, "select")
+		proxyGroupDazn = append(proxyGroupDazn, "select")
+		proxyGroupTikTok = append(proxyGroupTikTok, "select")
+		proxyGroupSpotify = append(proxyGroupSpotify, "select")
+		proxyGroupAppleMusic = append(proxyGroupAppleMusic, "select")
+		proxyGroupTIDAL = append(proxyGroupTIDAL, "select")
+		proxyGroupQobuz = append(proxyGroupQobuz, "select")
+		proxyGroupIQiyi = append(proxyGroupIQiyi, "select")
+		proxyGroupBilibiliHKTW = append(proxyGroupBilibiliHKTW, "select")
+		proxyGroupBilibiliSEA = append(proxyGroupBilibiliSEA, "select")
+		proxyGroupForeignMedia = append(proxyGroupForeignMedia, "select")
+		proxyGroupDomesticMedia = append(proxyGroupDomesticMedia, "select")
+		proxyGroupOneDrive = append(proxyGroupOneDrive, "select")
+		proxyGroupICloud = append(proxyGroupICloud, "select")
+		proxyGroupMicrosoftServices = append(proxyGroupMicrosoftServices, "select")
+		proxyGroupAppleServices = append(proxyGroupAppleServices, "select")
+		proxyGroupGamingPlatform = append(proxyGroupGamingPlatform, "select")
+		proxyGroupGamingDownload = append(proxyGroupGamingDownload, "select")
+		proxyGroupEmailService = append(proxyGroupEmailService, "select")
+		proxyGroupForeignWebsites = append(proxyGroupForeignWebsites, "select")
+		proxyGroupDomesticWebsites = append(proxyGroupDomesticWebsites, "select")
+		proxyGroupLeak = append(proxyGroupLeak, "select")
+	}
+
+	for _, v := range *nodes {
 		switch v.Protocol {
 		case constant.NODE_PROTOCOL_VMESS: //VMESS协议
 			var nodeItem []string
@@ -358,6 +420,7 @@ func Surge(nodes *[]model.Node) string {
 			proxyGroupProxy = append(proxyGroupProxy, v.Remarks)
 			proxyGroupAuto = append(proxyGroupAuto, v.Remarks)
 			proxyGroupFallback = append(proxyGroupFallback, v.Remarks)
+
 		case constant.NODE_PROTOCOL_TROJAN: //Trojan协议
 			var nodeItem []string
 			nodeItem = append(nodeItem, v.Remarks+"="+"trojan")
@@ -401,6 +464,10 @@ func Surge(nodes *[]model.Node) string {
 			proxyGroupAuto = append(proxyGroupAuto, v.Remarks)
 			proxyGroupFallback = append(proxyGroupFallback, v.Remarks)
 
+			// 写入节点
+			if global.Config.SystemParams.SurgeProxyDailyRules {
+
+			}
 		case constant.NODE_PROTOCOL_SHADOWSOCKS:
 			if strings.HasPrefix(v.Scy, "2022") {
 				continue
@@ -421,7 +488,6 @@ func Surge(nodes *[]model.Node) string {
 			proxyGroupProxy = append(proxyGroupProxy, v.Remarks)
 			proxyGroupAuto = append(proxyGroupAuto, v.Remarks)
 			proxyGroupFallback = append(proxyGroupFallback, v.Remarks)
-
 		}
 	}
 	//
