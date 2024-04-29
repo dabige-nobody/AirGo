@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -319,66 +320,10 @@ func Surge(nodes *[]model.Node) string {
 	proxyGroupFallback = append(proxyGroupFallback, "url=http://www.gstatic.com/generate_204")
 	proxyGroupFallback = append(proxyGroupFallback, "interval=43200")
 
-	// Surge订阅类型日常规则代理节点
-	surgeProxyDailyGroup := &model.ProxyGroup{}
-
-	var (
-		proxyGroupManual, proxyGroupGoogle, proxyGroupBing, proxyGroupYahoo, proxyGroupSpeedtest, proxyGroupOpenAI, proxyGroupChatApps, proxyGroupDiscord, proxyGroupYouTube,
-		proxyGroupNetflix, proxyGroupDisneyPlus, proxyGroupBahamut, proxyGroupViuTV, proxyGroupKKTV, proxyGroupKoreanMedia, proxyGroupJapaneseMedia, proxyGroupAppleTVPlus,
-		proxyGroupHBOGO, proxyGroupHBOMAX, proxyGroupPrimeVideo, proxyGroupEMBY, proxyGroupDazn, proxyGroupTikTok, proxyGroupSpotify, proxyGroupAppleMusic, proxyGroupTIDAL,
-		proxyGroupQobuz, proxyGroupIQiyi, proxyGroupBilibiliHKTW, proxyGroupBilibiliSEA, proxyGroupForeignMedia, proxyGroupDomesticMedia, proxyGroupOneDrive, proxyGroupICloud,
-		proxyGroupMicrosoftServices, proxyGroupAppleServices, proxyGroupGamingPlatform, proxyGroupGamingDownload, proxyGroupEmailService, proxyGroupForeignWebsites, proxyGroupDomesticWebsites, proxyGroupLeak []string
-	)
-	// 判断是否需要增加Surge订阅类型日常规则
+	// 判断是否需要增加Surge订阅类型日常规则节点
+	surgeProxyDailyGroup := model.ProxyGroup{}
 	if global.Config.SystemParams.SurgeProxyDailyRules {
-		for {
-			for key, value := range surgeProxyDailyGroup {
-
-			}
-
-		}
-		proxyGroupManual = append(proxyGroupManual, "select")
-		proxyGroupGoogle = append(proxyGroupGoogle, "select")
-		proxyGroupBing = append(proxyGroupBing, "select")
-		proxyGroupYahoo = append(proxyGroupYahoo, "select")
-		proxyGroupSpeedtest = append(proxyGroupSpeedtest, "select")
-		proxyGroupOpenAI = append(proxyGroupOpenAI, "select")
-		proxyGroupChatApps = append(proxyGroupChatApps, "select")
-		proxyGroupDiscord = append(proxyGroupDiscord, "select")
-		proxyGroupYouTube = append(proxyGroupYouTube, "select")
-		proxyGroupNetflix = append(proxyGroupNetflix, "select")
-		proxyGroupDisneyPlus = append(proxyGroupDisneyPlus, "select")
-		proxyGroupBahamut = append(proxyGroupBahamut, "select")
-		proxyGroupViuTV = append(proxyGroupViuTV, "select")
-		proxyGroupKKTV = append(proxyGroupKKTV, "select")
-		proxyGroupKoreanMedia = append(proxyGroupKoreanMedia, "select")
-		proxyGroupJapaneseMedia = append(proxyGroupJapaneseMedia, "select")
-		proxyGroupAppleTVPlus = append(proxyGroupAppleTVPlus, "select")
-		proxyGroupHBOGO = append(proxyGroupHBOGO, "select")
-		proxyGroupHBOMAX = append(proxyGroupHBOMAX, "select")
-		proxyGroupPrimeVideo = append(proxyGroupPrimeVideo, "select")
-		proxyGroupEMBY = append(proxyGroupEMBY, "select")
-		proxyGroupDazn = append(proxyGroupDazn, "select")
-		proxyGroupTikTok = append(proxyGroupTikTok, "select")
-		proxyGroupSpotify = append(proxyGroupSpotify, "select")
-		proxyGroupAppleMusic = append(proxyGroupAppleMusic, "select")
-		proxyGroupTIDAL = append(proxyGroupTIDAL, "select")
-		proxyGroupQobuz = append(proxyGroupQobuz, "select")
-		proxyGroupIQiyi = append(proxyGroupIQiyi, "select")
-		proxyGroupBilibiliHKTW = append(proxyGroupBilibiliHKTW, "select")
-		proxyGroupBilibiliSEA = append(proxyGroupBilibiliSEA, "select")
-		proxyGroupForeignMedia = append(proxyGroupForeignMedia, "select")
-		proxyGroupDomesticMedia = append(proxyGroupDomesticMedia, "select")
-		proxyGroupOneDrive = append(proxyGroupOneDrive, "select")
-		proxyGroupICloud = append(proxyGroupICloud, "select")
-		proxyGroupMicrosoftServices = append(proxyGroupMicrosoftServices, "select")
-		proxyGroupAppleServices = append(proxyGroupAppleServices, "select")
-		proxyGroupGamingPlatform = append(proxyGroupGamingPlatform, "select")
-		proxyGroupGamingDownload = append(proxyGroupGamingDownload, "select")
-		proxyGroupEmailService = append(proxyGroupEmailService, "select")
-		proxyGroupForeignWebsites = append(proxyGroupForeignWebsites, "select")
-		proxyGroupDomesticWebsites = append(proxyGroupDomesticWebsites, "select")
-		proxyGroupLeak = append(proxyGroupLeak, "select")
+		surgeProxyDailyGroup = SurgeProxyGroup("select", surgeProxyDailyGroup)
 	}
 
 	for _, v := range *nodes {
@@ -420,7 +365,10 @@ func Surge(nodes *[]model.Node) string {
 			proxyGroupProxy = append(proxyGroupProxy, v.Remarks)
 			proxyGroupAuto = append(proxyGroupAuto, v.Remarks)
 			proxyGroupFallback = append(proxyGroupFallback, v.Remarks)
-
+			// Surge订阅类型日常规则节点
+			if global.Config.SystemParams.SurgeProxyDailyRules {
+				surgeProxyDailyGroup = SurgeProxyGroup(v.Remarks, surgeProxyDailyGroup)
+			}
 		case constant.NODE_PROTOCOL_TROJAN: //Trojan协议
 			var nodeItem []string
 			nodeItem = append(nodeItem, v.Remarks+"="+"trojan")
@@ -442,6 +390,10 @@ func Surge(nodes *[]model.Node) string {
 			proxyGroupProxy = append(proxyGroupProxy, v.Remarks)
 			proxyGroupAuto = append(proxyGroupAuto, v.Remarks)
 			proxyGroupFallback = append(proxyGroupFallback, v.Remarks)
+			// Surge订阅类型日常规则节点
+			if global.Config.SystemParams.SurgeProxyDailyRules {
+				surgeProxyDailyGroup = SurgeProxyGroup(v.Remarks, surgeProxyDailyGroup)
+			}
 		case constant.NODE_PROTOCOL_HYSTERIA2: //hy2协议
 			var nodeItem []string
 			nodeItem = append(nodeItem, v.Remarks+" = "+"hysteria2")
@@ -463,10 +415,9 @@ func Surge(nodes *[]model.Node) string {
 			proxyGroupProxy = append(proxyGroupProxy, v.Remarks)
 			proxyGroupAuto = append(proxyGroupAuto, v.Remarks)
 			proxyGroupFallback = append(proxyGroupFallback, v.Remarks)
-
-			// 写入节点
+			// Surge订阅类型日常规则节点
 			if global.Config.SystemParams.SurgeProxyDailyRules {
-
+				surgeProxyDailyGroup = SurgeProxyGroup(v.Remarks, surgeProxyDailyGroup)
 			}
 		case constant.NODE_PROTOCOL_SHADOWSOCKS:
 			if strings.HasPrefix(v.Scy, "2022") {
@@ -488,6 +439,10 @@ func Surge(nodes *[]model.Node) string {
 			proxyGroupProxy = append(proxyGroupProxy, v.Remarks)
 			proxyGroupAuto = append(proxyGroupAuto, v.Remarks)
 			proxyGroupFallback = append(proxyGroupFallback, v.Remarks)
+			// Surge订阅类型日常规则节点
+			if global.Config.SystemParams.SurgeProxyDailyRules {
+				surgeProxyDailyGroup = SurgeProxyGroup(v.Remarks, surgeProxyDailyGroup)
+			}
 		}
 	}
 	//
@@ -540,6 +495,17 @@ func Surge(nodes *[]model.Node) string {
 			RuleText: DefaultSurgeRules,
 		},
 	}
+	// Surge订阅类型日常规则节点
+	if global.Config.SystemParams.SurgeProxyDailyRules {
+		// 节点
+		//surgeConf.ProxyGroup = surgeProxyDailyGroup
+		//surgeConf.ProxyGroup.Proxy = proxyGroupProxy
+		//surgeConf.ProxyGroup.Auto = proxyGroupAuto
+		surgeConf.ProxyGroup.Fallback = proxyGroupFallback
+
+		// 规则
+		surgeConf.Rule = model.Rule{RuleText: SurgeProxyDailyRules}
+	}
 	cfg := ini.Empty()
 	err := cfg.ReflectFrom(&surgeConf)
 	if err != nil {
@@ -556,7 +522,6 @@ func Surge(nodes *[]model.Node) string {
 	text = strings.ReplaceAll(text, "RuleText = ", "")
 	//fmt.Println("text:", text)
 	return text
-
 }
 
 func Quantumult(nodes *[]model.Node) string {
@@ -1030,6 +995,29 @@ func GetSSPassword(node model.Node) string {
 func SSPasswordEncodeToString(node model.Node) string {
 	p := base64.StdEncoding.EncodeToString([]byte(node.Scy + ":" + GetSSPassword(node)))
 	return p
+}
+
+func SurgeProxyGroup(alias string, proxyGroupData model.ProxyGroup) (proxyGroupNewData model.ProxyGroup) {
+	// 使用反射遍历结构体字段
+	valueOfTest := reflect.ValueOf(&proxyGroupData).Elem()
+	typeOfTest := valueOfTest.Type()
+
+	for i := 0; i < valueOfTest.NumField(); i++ {
+		field := valueOfTest.Field(i)
+		tag := typeOfTest.Field(i).Tag.Get("ini")
+
+		// 检查标签是否存在，并且为需要追加的字段
+		if tag != "" && tag != "Proxy" && tag != "auto" && tag != "fallback" {
+			// 如果切片字段是nil，则创建一个空切片
+			if field.Kind() == reflect.Slice && field.IsNil() {
+				field.Set(reflect.MakeSlice(field.Type(), 0, 0))
+			}
+
+			// 追加字符串到切片元素
+			field.Set(reflect.Append(field, reflect.ValueOf(alias)))
+		}
+	}
+	return proxyGroupData
 }
 
 const DefaultSurgeRules = `
@@ -1561,3 +1549,76 @@ DOMAIN-KEYWORD,-cn,DIRECT
 GEOIP,CN,DIRECT
 FINAL,Proxy,dns-failed
 `
+
+const SurgeProxyDailyRules = `
+# 强制订阅域名直连
+DOMAIN,192.168.0.92:16667,DIRECT
+
+# 规则集
+RULE-SET,LAN,DIRECT
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/xuanranran/Clash/main/Clash/OpenAi.list,🧲 OpenAI
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OneDrive/OneDrive.list,🔖 OneDrive
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Speedtest/Speedtest.list,🗺 Speedtest
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Discord/Discord.list,🎙 Discord
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Mail/Mail.list,📪 邮件服务
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Mailru/Mailru.list,📪 邮件服务
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Protonmail/Protonmail.list,📪 邮件服务
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleMail/AppleMail.list,📪 邮件服务
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/xuanranran/Clash/main/Clash/chat.list,📲 聊天软件
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/GameDownloadCN/GameDownloadCN.list,🎮 游戏平台
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/GameDownload/GameDownload.list,🎮 游戏平台
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Classic/Classic.list,🎮 游戏平台
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Nvidia/Nvidia.list,🎮 游戏平台
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.list,🎮 游戏平台
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/xuanranran/Clash/main/Clash/GameRule.list,🎮 游戏平台
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/xuanranran/Clash/main/Clash/KoreaMedia.list,🎬 韩国媒体
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AmazonPrimeVideo/AmazonPrimeVideo.list,🎬 PrimeVideo
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ViuTV/ViuTV.list,🎬 viuTV
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/KKTV/KKTV.list,🎬 KKTV
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/LineTV/LineTV.list,🎬 KKTV
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.list,🎬 巴哈姆特
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HamiVideo/HamiVideo.list,🎬 巴哈姆特
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/xuanranran/Clash/main/Clash/JapanMedia.list,🎬 日本媒体
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.list,🎬 YouTube
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TIDAL/TIDAL.list,🎵 TIDAL
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.list,🎬 DisneyPlus
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/myTVSUPER/myTVSUPER.list,🎬 HBOGO
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HBOHK/HBOHK.list,🎬 HBOGO
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PCCW/PCCW.list,🎬 HBOGO
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HBOAsia/HBOAsia.list,🎬 HBOGO
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HBO/HBO.list,🎬 HBOMAX
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Espn/Espn.list,🎬 HBOMAX
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Fox/Fox.list,🎬 HBOMAX
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ParamountPlus/ParamountPlus.list,🎬 HBOMAX
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Peacock/Peacock.list,🎬 HBOMAX
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HuluUSA/HuluUSA.list,🎬 HBOMAX
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/DiscoveryPlus/DiscoveryPlus.list,🎬 HBOMAX
+RULE-SET,https://raw.githubusercontent.com/xuanranran/Clash/main/Clash/MAX.list,🎬 HBOMAX
+RULE-SET,https://raw.githubusercontent.com/xuanranran/Clash/main/Clash/EMBY.list,🎬 EMBY
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/DAZN/DAZN.list,🎬 Dazn
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleTV/AppleTV.list,🎬 AppleTV+
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBiliIntl/BiliBiliIntl.list,🎬 B站东南亚
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.list,🎬 B站港澳台
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/iQIYI/iQIYI.list,🎬 爱奇艺
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.list,🎵 Spotify
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Qobuz/Qobuz.list,🎵 Qobuz
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleMusic/AppleMusic.list,🎵 AppleMusic
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TikTok/TikTok.list,🎶 TikTok
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.list,🎬 Netflix
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/iCloud/iCloud.list,☁️ iCloud
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bing/Bing.list,🔎 Bing
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.list,🧩 微软服务
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.list,🍎 苹果服务
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia.list,🌏 国外流媒体
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list,🔎 Google
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/xuanranran/Clash/main/rule/yahoo.list,🔎 Yahoo
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list,🌏 国外网站
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMedia/ChinaMedia.list,🌏 国内流媒体
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/GoogleCN.list,🌏 国内网站
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaIPs/ChinaIPsTest/ChinaIPsTest.list,🌏 国内网站
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.list,🌏 国内网站
+RULE-SET,https://ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Download.list,🌏 国内网站
+
+# 最终规则
+GEOIP,CN,🌏 国内网站
+FINAL,🐟 漏网之鱼,dns-failed`
