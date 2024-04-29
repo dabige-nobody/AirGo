@@ -499,9 +499,9 @@ func Surge(nodes *[]model.Node) string {
 	if global.Config.SystemParams.SurgeProxyDailyRules {
 		// 节点
 		surgeConf.ProxyGroup = surgeProxyDailyGroup
-		//surgeConf.ProxyGroup.Proxy = proxyGroupProxy
-		//surgeConf.ProxyGroup.Auto = proxyGroupAuto
-		//surgeConf.ProxyGroup.Fallback = proxyGroupFallback
+		surgeConf.ProxyGroup.Proxy = proxyGroupProxy
+		surgeConf.ProxyGroup.Auto = proxyGroupAuto
+		surgeConf.ProxyGroup.Fallback = proxyGroupFallback
 
 		// 规则
 		surgeConf.Rule = model.Rule{RuleText: SurgeProxyDailyRules}
