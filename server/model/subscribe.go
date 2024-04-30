@@ -175,11 +175,10 @@ type SurgeConf struct {
 }
 
 type General struct {
-	Loglevel            string   `ini:"loglevel""`
-	Doh_server          string   `ini:"doh-server "`
-	Dns_server          []string `ini:"dns-server"`
-	Tun_excluded_routes []string `ini:"tun-excluded-routes"`
-	Skip_proxy          []string `ini:"skip-proxy"`
+	Loglevel   string   `ini:"loglevel""`
+	Doh_server string   `ini:"doh-server "`
+	Dns_server []string `ini:"dns-server"`
+	Skip_proxy []string `ini:"skip-proxy"`
 
 	Wifi_assist             bool   `ini:"wifi-assist"`
 	Allow_wifi_access       bool   `ini:"allow-wifi-access"`
